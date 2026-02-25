@@ -17,6 +17,7 @@
             --cosmic-purple: #9d4edd;
             --neon-glow: #c77dff;
             --starlight: #f8f9fa;
+            --cyber-cyan: #00ffcc;
             --heading-font: 'Archivo Black', sans-serif; 
             --body-font: 'Space Grotesk', sans-serif;
         }
@@ -139,49 +140,51 @@
             letter-spacing: 2px;
         }
 
-        /* --- Left-Aligned & Futuristic HUD Nav --- */
+        /* --- Full-Width Cyber Nav --- */
         nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 50px; 
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            display: flex;
+            justify-content: space-between; /* Pushes logo to left */
+            align-items: center;
+            padding: 15px 50px;
             background: rgba(10, 2, 20, 0.65);
-            backdrop-filter: blur(20px); 
-            position: fixed; width: 100%; top: 0; box-sizing: border-box; z-index: 1000;
-            border-bottom: 1px solid rgba(199, 125, 255, 0.2); 
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 -2px 10px rgba(157, 78, 221, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(199, 125, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 -2px 15px rgba(157, 78, 221, 0.1);
+            z-index: 1000;
             transition: all 0.4s ease;
-            overflow: hidden; 
+            box-sizing: border-box;
         }
 
-        /* HUD Scanner Sweep Effect */
-        nav::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 40%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(199, 125, 255, 0.4), transparent);
-            animation: hudScan 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            z-index: 0; pointer-events: none;
-        }
-
-        @keyframes hudScan {
-            0% { left: -100%; }
-            50%, 100% { left: 200%; }
-        }
-
-        /* Diagonal Cyber Overlay */
+        /* Animated Laser Sweep along the bottom */
         nav::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(45deg, rgba(199, 125, 255, 0.04) 0px, rgba(199, 125, 255, 0.04) 2px, transparent 2px, transparent 12px);
-            z-index: 0; pointer-events: none;
+            content: ''; position: absolute; bottom: 0; left: 0;
+            height: 2px; width: 150px;
+            background: var(--neon-glow);
+            box-shadow: 0 0 15px #fff, 0 0 30px var(--neon-glow);
+            animation: navLaserScan 5s ease-in-out infinite alternate;
+            border-radius: 5px;
+            z-index: 0;
         }
 
-        nav.scrolled { 
-            padding: 10px 50px; 
-            background: rgba(5, 1, 10, 0.95); 
-            border-bottom: 1px solid var(--neon-glow);
-            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
+        @keyframes navLaserScan {
+            0% { left: 0; width: 50px; }
+            50% { width: 300px; }
+            100% { left: calc(100% - 150px); width: 150px; }
         }
 
-        .logo { font-size: 2.5rem; color: var(--starlight); display: flex; align-items: center; position: relative; z-index: 1; text-shadow: 0 0 10px var(--cosmic-purple); }
+        nav.scrolled {
+            padding: 10px 50px;
+            background: rgba(5, 1, 10, 0.95);
+            border-bottom-color: var(--neon-glow);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(199, 125, 255, 0.3);
+        }
+
+        .logo { font-size: 2.2rem; color: var(--starlight); display: flex; align-items: center; position: relative; z-index: 1; text-shadow: 0 0 10px var(--cosmic-purple); transition: transform 0.3s; }
+        .logo:hover { transform: scale(1.05); }
         nav .custom-ampersand { color: #ffffff; }
-        .nav-spacer { width: 50px; /* Balances the flex layout */ }
 
         /* --- Hero with Cosmic Image Background --- */
         .hero {
@@ -247,7 +250,7 @@
         @keyframes fadeInBounce { to { opacity: 1; } }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); } 40% { transform: translateY(-20px) translateX(-50%); } 60% { transform: translateY(-10px) translateX(-50%); } }
 
-        /* --- Side Falling Blocks (DECREASED FREQUENCY) --- */
+        /* --- Side Falling Blocks --- */
         .side-blocks {
             position: fixed; top: 0; width: 150px; 
             height: 100vh;
@@ -370,7 +373,13 @@
         @media screen and (max-width: 768px) { 
             nav { padding: 15px 20px; }
             nav.scrolled { padding: 10px 20px; }
-            .hero h1 { font-size: 3.5rem; } 
+            
+            /* Forces the title to stay on exactly one line and scales it based on screen width */
+            .hero h1 { 
+                font-size: clamp(1.5rem, 9vw, 3rem); 
+                white-space: nowrap; 
+            } 
+            
             .section h2 { font-size: 2.5rem; }
             
             .cursor-dot, .cursor-outline { display: none !important; }
@@ -428,7 +437,6 @@
         <div class="logo">
             B<span class="custom-ampersand">&amp;</span>B
         </div>
-        <div class="nav-spacer"></div>
     </nav>
 
     <header class="hero">
@@ -515,7 +523,7 @@
             }
         });
 
-        document.querySelectorAll('.card, .falling-letter').forEach(el => {
+        document.querySelectorAll('.card, .falling-letter, .logo').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 cursorOutline.style.width = '35px'; cursorOutline.style.height = '35px';
                 cursorOutline.style.backgroundColor = 'rgba(199, 125, 255, 0.15)';
@@ -554,7 +562,7 @@
             });
         }
 
-        // --- 5. Side Falling Blocks (DECREASED FREQUENCY) ---
+        // --- 5. Side Falling Blocks ---
         function createFallingBlock(containerId) {
             const container = document.getElementById(containerId);
             const block = document.createElement('div');
@@ -573,7 +581,6 @@
             setTimeout(() => { block.remove(); }, duration * 1000);
         }
 
-        // Changed from ~400ms to ~2 seconds to decrease clutter
         setInterval(() => { createFallingBlock('blocks-left'); }, 1800);
         setInterval(() => { createFallingBlock('blocks-right'); }, 2200);
 
