@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byte & Beyond | B&B</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --space-black: #05010a;
+            --deep-purple: #1a0826;
+            --cosmic-purple: #9d4edd;
+            --neon-glow: #c77dff;
+            --starlight: #f8f9fa;
+            --heading-font: 'Archivo Black', sans-serif; 
+            --body-font: 'Space Grotesk', sans-serif;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: var(--body-font);
+            background-color: var(--space-black);
+            color: var(--starlight);
+            overflow-x: hidden; scroll-behavior: smooth;
+            cursor: none; 
+        }
+
+        body.loading { overflow: hidden; }
+
+        /* --- New Simple Diamond Cursor --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
+            z-index: 9999; pointer-events: none;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+        .cursor-dot { 
+            width: 6px; height: 6px; 
+            background-color: #fff; 
+            box-shadow: 0 0 10px var(--neon-glow); 
+        }
+        .cursor-outline {
+            width: 24px; height: 24px; 
+            border: 1.5px solid var(--neon-glow);
+            background-color: transparent;
+            box-shadow: inset 0 0 10px rgba(199, 125, 255, 0.2);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        h1, h2, h3, .logo { font-family: var(--heading-font); font-weight: 400; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* --- Pure CSS Custom Ampersand --- */
+        .custom-ampersand {
+            color: var(--neon-glow); 
+            font-family: 'Brush Script MT', cursive, serif; 
+            font-size: 1.3em;
+            text-transform: none; 
+            margin: 0 10px;
+            display: inline-block;
+            vertical-align: baseline;
+        }
+
+        /* --- Holographic Cyber-Grid Preloader --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--space-black); z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+            overflow: hidden;
+        }
+
+        .cyber-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(199, 125, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 125, 255, 0.2) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+            animation: gridPan 20s linear infinite;
+        }
+
+        @keyframes gridPan {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .loader-container {
+            width: 80%; max-width: 600px;
+            color: var(--neon-glow);
+            font-family: var(--body-font);
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-bar-container {
+            width: 100%; height: 30px;
+            border: 2px solid var(--neon-glow);
+            box-shadow: 0 0 20px var(--neon-glow), inset 0 0 15px var(--cosmic-purple);
+            padding: 4px; position: relative; overflow: hidden;
+            border-radius: 6px;
+            animation: pulseContainerGlow 1.5s infinite alternate;
+        }
+
+        @keyframes pulseContainerGlow {
+            0% { box-shadow: 0 0 15px var(--cosmic-purple), inset 0 0 10px var(--cosmic-purple); }
+            100% { box-shadow: 0 0 35px var(--neon-glow), inset 0 0 20px var(--neon-glow); border-color: #fff; }
+        }
+
+        .progress-bar {
+            height: 100%; width: 0%;
+            background-color: var(--neon-glow);
+            box-shadow: 0 0 25px var(--neon-glow), 0 0 10px #fff;
+            transition: width 0.1s linear;
+            border-radius: 3px;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.9) 1px, transparent 2px),
+                radial-gradient(circle at 50% 30%, rgba(255,255,255,0.8) 1px, transparent 2px),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.9) 2px, transparent 3px),
+                linear-gradient(45deg, rgba(255,255,255,0.4) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, transparent 75%, transparent);
+            background-size: 30px 30px, 25px 25px, 40px 40px, 20px 20px;
+            animation: crystalGlitter 1.5s linear infinite;
+        }
+
+        @keyframes crystalGlitter {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 30px 0, 25px 25px, -40px 40px, 40px 0; }
+        }
+
+        .loader-bottom-text {
+            display: flex; justify-content: space-between;
+            margin-top: 15px; font-size: 1.4rem; font-weight: 600;
+            text-shadow: 0 0 15px var(--neon-glow);
+            letter-spacing: 2px;
+        }
+
+        /* --- Left-Aligned & Futuristic HUD Nav --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 50px; 
+            background: rgba(10, 2, 20, 0.65);
+            backdrop-filter: blur(20px); 
+            position: fixed; width: 100%; top: 0; box-sizing: border-box; z-index: 1000;
+            border-bottom: 1px solid rgba(199, 125, 255, 0.2); 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 -2px 10px rgba(157, 78, 221, 0.1);
+            transition: all 0.4s ease;
+            overflow: hidden; 
+        }
+
+        /* HUD Scanner Sweep Effect */
+        nav::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 40%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(199, 125, 255, 0.4), transparent);
+            animation: hudScan 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            z-index: 0; pointer-events: none;
+        }
+
+        @keyframes hudScan {
+            0% { left: -100%; }
+            50%, 100% { left: 200%; }
+        }
+
+        /* Diagonal Cyber Overlay */
+        nav::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(45deg, rgba(199, 125, 255, 0.04) 0px, rgba(199, 125, 255, 0.04) 2px, transparent 2px, transparent 12px);
+            z-index: 0; pointer-events: none;
+        }
+
+        nav.scrolled { 
+            padding: 10px 50px; 
+            background: rgba(5, 1, 10, 0.95); 
+            border-bottom: 1px solid var(--neon-glow);
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
+        }
+
+        .logo { font-size: 2.5rem; color: var(--starlight); display: flex; align-items: center; position: relative; z-index: 1; text-shadow: 0 0 10px var(--cosmic-purple); }
+        nav .custom-ampersand { color: #ffffff; }
+        .nav-spacer { width: 50px; /* Balances the flex layout */ }
+
+        /* --- Hero with Cosmic Image Background --- */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; position: relative;
+            overflow: hidden;
+            background-color: var(--space-black);
+            background-image: url('space-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; 
+        }
+
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,1,10, 0.7) 0%, rgba(5,1,10,1) 100%); z-index: 1;
+        }
+        
+        #starfield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .hero-content { z-index: 2; position: relative; }
+        
+        .hero h1 { 
+            font-size: 5rem; margin-bottom: 15px; display: inline-block; perspective: 1000px; 
+            text-shadow: 0 0 20px rgba(157, 78, 221, 0.6); 
+            opacity: 0;
+            animation: dropAndImpact 0.8s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+        }
+        
+        .falling-letter { 
+            color: #f2e8ff; 
+            display: inline-block; 
+            transition: text-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .falling-letter:hover {
+            color: #ffffff;
+            text-shadow: 0 0 20px var(--neon-glow), 0 0 40px var(--neon-glow), 0 0 60px #fff;
+            transform: scale(1.1) translateY(-5px) !important;
+            cursor: none;
+        }
+
+        .title-ampersand {
+            color: #ffffff !important;
+            animation: hyperGlow 1.5s ease-in-out infinite alternate !important;
+        }
+
+        @keyframes hyperGlow {
+            0% { text-shadow: 0 0 15px var(--cosmic-purple), 0 0 30px var(--neon-glow); }
+            100% { text-shadow: 0 0 25px var(--neon-glow), 0 0 50px var(--cosmic-purple), 0 0 80px #fff; }
+        }
+
+        @keyframes dropAndImpact { 
+            0% { opacity: 0; transform: translateY(-500px) scaleY(1.2); } 
+            60% { opacity: 1; transform: translateY(0) scaleY(0.6) scaleX(1.3); text-shadow: 0 0 50px var(--neon-glow); } 
+            80% { transform: translateY(-20px) scaleY(1.1) scaleX(0.9); } 
+            100% { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        
+        .hero p { font-size: 1.5rem; color: #d8c3ed; opacity: 0; transform: translateY(20px); animation: slideUpFade 1.5s forwards 1.8s; }
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-down { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--starlight); font-size: 2rem; opacity: 0; animation: fadeInBounce 2s forwards 3s, bounce 2s infinite 5s; }
+        @keyframes fadeInBounce { to { opacity: 1; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); } 40% { transform: translateY(-20px) translateX(-50%); } 60% { transform: translateY(-10px) translateX(-50%); } }
+
+        /* --- Side Falling Blocks (DECREASED FREQUENCY) --- */
+        .side-blocks {
+            position: fixed; top: 0; width: 150px; 
+            height: 100vh;
+            pointer-events: none; z-index: 999; 
+        }
+        .side-blocks.left { left: 0; }
+        .side-blocks.right { right: 0; }
+        
+        .falling-block {
+            position: absolute; 
+            background: rgba(157, 78, 221, 0.15); 
+            border: 2px solid rgba(199, 125, 255, 0.6); 
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4); 
+            animation: blockFall linear forwards;
+            backdrop-filter: blur(4px); 
+        }
+        @keyframes blockFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Expressive Robots --- */
+        .roaming-robot {
+            position: fixed; bottom: 20px;
+            z-index: 3; 
+            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none; opacity: 0;
+        }
+        
+        .robot-face {
+            font-family: var(--heading-font); 
+            color: var(--neon-glow); text-shadow: 0 0 10px var(--neon-glow);
+            font-size: 1.5rem; background: rgba(26, 8, 38, 0.5);
+            border: 1px solid var(--cosmic-purple); padding: 8px 12px; 
+            border-radius: 8px; box-shadow: 0 0 15px var(--cosmic-purple);
+            animation: float 2s ease-in-out infinite; white-space: nowrap;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* --- Sections Shared --- */
+        .section { padding: 100px 10%; min-height: 40vh; position: relative; z-index: 2; padding-bottom: 100px; }
+        .section-title-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; text-align: center; position: relative; z-index: 2; }
+        .section h2 { font-size: 4rem; color: var(--starlight); margin: 0; position: relative; }
+        
+        /* --- Fancier Tech Underline --- */
+        .tech-underline {
+            position: relative;
+            width: 0; height: 2px;
+            background: var(--cosmic-purple);
+            margin-top: 15px;
+            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .section.is-visible .tech-underline { width: 220px; box-shadow: 0 0 15px var(--neon-glow); }
+        
+        /* Diamonds on the ends */
+        .tech-underline::before, .tech-underline::after {
+            content: ''; position: absolute;
+            width: 6px; height: 6px;
+            background: var(--neon-glow);
+            transform: rotate(45deg) scale(0);
+            box-shadow: 0 0 10px var(--neon-glow);
+            transition: transform 0.5s ease 1s; 
+        }
+        .tech-underline::before { left: -3px; }
+        .tech-underline::after { right: -3px; }
+        
+        .section.is-visible .tech-underline::before, 
+        .section.is-visible .tech-underline::after {
+            transform: rotate(45deg) scale(1);
+        }
+        
+        /* Glowing Center Core */
+        .tech-underline-center {
+            position: absolute;
+            width: 30px; height: 4px;
+            background: #fff;
+            box-shadow: 0 0 15px var(--neon-glow), 0 0 30px var(--neon-glow);
+            opacity: 0;
+            transition: opacity 0.5s ease 1.2s;
+            border-radius: 2px;
+        }
+        .section.is-visible .tech-underline-center { opacity: 1; }
+
+        .info-text { font-size: 1.2rem; line-height: 2; max-width: 900px; margin: 0 auto 60px auto; color: #d8c3ed; text-align: center; opacity: 0; transform: translateY(30px); transition: all 1s ease 0.3s; position: relative; z-index: 2; }
+        .section.is-visible .info-text { opacity: 1; transform: translateY(0); }
+
+        #network-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; 
+            pointer-events: auto; 
+        }
+
+        /* --- Cards Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; position: relative; z-index: 2; }
+        .card { 
+            background: rgba(26, 8, 38, 0.7); backdrop-filter: blur(12px); 
+            border: 1px solid rgba(157, 78, 221, 0.4); border-radius: 15px; 
+            padding: 40px 30px; opacity: 0; text-align: center; position: relative;
+            transform: translateY(50px); transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.3s, border-color 0.3s;
+        }
+        
+        .section.is-visible .card { opacity: 1; animation: continuousFloat 6s ease-in-out infinite; }
+        .section.is-visible .card:nth-child(1) { animation-delay: 0s; }
+        .section.is-visible .card:nth-child(2) { animation-delay: 1s; }
+        .section.is-visible .card:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes continuousFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .card:hover { box-shadow: 0 15px 40px rgba(157, 78, 221, 0.6); border-color: var(--neon-glow); background: rgba(42, 13, 61, 0.95); z-index: 10; cursor: pointer; animation-play-state: paused; }
+        .card i { font-size: 3.5rem; color: var(--neon-glow); margin-bottom: 20px; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .card:hover i { transform: scale(1.2) rotate(10deg); text-shadow: 0 0 20px var(--cosmic-purple); }
+        .card h3 { font-size: 2rem; color: var(--starlight); margin-top: 0; margin-bottom: 15px; }
+
+        /* --- TARGETED MOBILE FIXES --- */
+        @media screen and (max-width: 768px) { 
+            nav { padding: 15px 20px; }
+            nav.scrolled { padding: 10px 20px; }
+            .hero h1 { font-size: 3.5rem; } 
+            .section h2 { font-size: 2.5rem; }
+            
+            .cursor-dot, .cursor-outline { display: none !important; }
+            body, html { cursor: auto !important; }
+
+            .side-blocks { 
+                width: 30px !important; 
+                z-index: 1 !important; 
+            }
+            .falling-block { 
+                border-width: 1px !important; 
+                box-shadow: 0 0 5px rgba(157, 78, 221, 0.3) !important;
+            }
+
+            .roaming-robot {
+                top: auto !important;
+                bottom: 10px !important;
+                transform: none !important;
+                z-index: 3; 
+            }
+            #roaming-robot-1 { left: 10px !important; }
+            #roaming-robot-2 { right: 10px !important; left: auto !important; }
+            .robot-face { font-size: 1rem !important; padding: 4px 8px !important; }
+        }
+    </style>
+</head>
+<body class="loading">
+
+    <div id="preloader">
+        <div class="cyber-grid"></div>
+        <div class="loader-container">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="loader-bottom-text">
+                <span>Loading.</span><span id="percentage">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <div class="side-blocks left" id="blocks-left"></div>
+    <div class="side-blocks right" id="blocks-right"></div>
+
+    <div id="roaming-robot-1" class="roaming-robot">
+        <div class="robot-face" id="robot-face-1">[ O _ O ]</div>
+    </div>
+    <div id="roaming-robot-2" class="roaming-robot">
+        <div class="robot-face" id="robot-face-2">[ ^ _ ^ ]</div>
+    </div>
+
+    <nav id="navbar">
+        <div class="logo">
+            B<span class="custom-ampersand">&amp;</span>B
+        </div>
+        <div class="nav-spacer"></div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 id="hero-title">Byte & Beyond</h1>
+            <p>Your gateway to technical mastery and creative thinking.</p>
+        </div>
+        <i class="fa-solid fa-chevron-down scroll-down"></i>
+    </header>
+
+    <section class="section scroll-element">
+        <canvas id="network-canvas"></canvas>
+
+        <div class="section-title-container">
+            <h2>What We Do</h2>
+            <div class="tech-underline">
+                <div class="tech-underline-center"></div>
+            </div>
+        </div>
+        
+        <p class="info-text">
+            Byte & Beyond is a club designed to take learning out of the textbook and into the real world. We are dedicated to building a vibrant tech community on campus by organizing engaging events, hands-on learning experiences, and structured training for both technical and non-technical enthusiasts.
+        </p>
+
+        <div class="grid">
+            <div class="card">
+                <i class="fa-solid fa-calendar-check"></i>
+                <h3>Events</h3>
+                <p>We organize technical and non-technical events where members can participate, compete, and have fun. These events help everyone connect, build confidence, and grow as a team.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-microchip"></i>
+                <h3>Workshops</h3>
+                <p>We conduct technical and non-technical workshops where members can learn new skills in a simple and practical way. Everyone gets a chance to try things out and gain hands-on experience.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <h3>Seminars</h3>
+                <p>We take classes on both technical and non-technical topics to help members understand concepts clearly. Our sessions focus on step-by-step learning and improving knowledge together.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- 1. Horizontal Progress Loader Logic ---
+        document.addEventListener("DOMContentLoaded", () => {
+            let count = 0;
+            const progressBar = document.getElementById('progress-bar');
+            const percentageText = document.getElementById('percentage');
+            const preloader = document.getElementById('preloader');
+            
+            let loadingInterval = setInterval(() => {
+                count += Math.floor(Math.random() * 5) + 1; 
+                if(count >= 100) {
+                    count = 100;
+                    clearInterval(loadingInterval);
+                    progressBar.style.width = '100%';
+                    percentageText.innerText = '100%';
+                    
+                    setTimeout(() => {
+                        preloader.style.opacity = '0';
+                        preloader.style.visibility = 'hidden';
+                        document.body.classList.remove('loading');
+                        startHeroAnimation();
+                        startRobot('roaming-robot-1', 'robot-face-1', 'left');
+                        startRobot('roaming-robot-2', 'robot-face-2', 'right');
+                        initNetworkCanvas(); 
+                    }, 500);
+                } else {
+                    progressBar.style.width = count + '%';
+                    percentageText.innerText = count + '%';
+                }
+            }, 40);
+        });
+
+        // --- 2. Custom Cursor Logic ---
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorOutline = document.getElementById('cursor-outline');
+        window.addEventListener('mousemove', (e) => {
+            if (window.getComputedStyle(cursorDot).display !== 'none') {
+                const posX = e.clientX; const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+                cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+            }
+        });
+
+        document.querySelectorAll('.card, .falling-letter').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '35px'; cursorOutline.style.height = '35px';
+                cursorOutline.style.backgroundColor = 'rgba(199, 125, 255, 0.15)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '24px'; cursorOutline.style.height = '24px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // --- 3. Navbar Scroll Effect ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) { nav.classList.add('scrolled'); } 
+            else { nav.classList.remove('scrolled'); }
+        });
+
+        // --- 4. Falling Letters ---
+        function startHeroAnimation() {
+            const titleElement = document.getElementById('hero-title');
+            const text = titleElement.innerText; 
+            titleElement.innerText = ''; 
+            
+            text.split('').forEach((char) => {
+                const span = document.createElement('span');
+                if (char === ' ') {
+                    span.innerHTML = '&nbsp;';
+                } else if (char === '&') {
+                    span.innerHTML = '&amp;';
+                    span.classList.add('custom-ampersand', 'title-ampersand'); 
+                } else {
+                    span.innerHTML = char;
+                }
+                span.classList.add('falling-letter');
+                titleElement.appendChild(span);
+            });
+        }
+
+        // --- 5. Side Falling Blocks (DECREASED FREQUENCY) ---
+        function createFallingBlock(containerId) {
+            const container = document.getElementById(containerId);
+            const block = document.createElement('div');
+            block.classList.add('falling-block');
+            
+            block.style.left = `${Math.random() * 80 + 10}px`; 
+            
+            const size = Math.random() * 20 + 15; 
+            block.style.width = `${size}px`;
+            block.style.height = `${size}px`;
+            
+            const duration = Math.random() * 5 + 4; 
+            block.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(block);
+            setTimeout(() => { block.remove(); }, duration * 1000);
+        }
+
+        // Changed from ~400ms to ~2 seconds to decrease clutter
+        setInterval(() => { createFallingBlock('blocks-left'); }, 1800);
+        setInterval(() => { createFallingBlock('blocks-right'); }, 2200);
+
+        // --- 6. Expressive Robots ---
+        function startRobot(robotId, faceId, side) {
+            const robot = document.getElementById(robotId);
+            const robotFace = document.getElementById(faceId);
+            robot.style.opacity = '1';
+
+            const expressions = [
+                '[ O _ O ]', '[ ^ _ ^ ]', '[ > _ < ]', 
+                '[ - _ - ]', '[ 0 _ 0 ]', '[ * _ * ]', '[ ! _ ! ]', '[ ✧ _ ✧ ]'
+            ];
+
+            function changeExpression() {
+                const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+                robotFace.innerText = randomExpression;
+                setTimeout(changeExpression, Math.random() * 3000 + 2000);
+            }
+
+            function moveRobot() {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                let randomX;
+                
+                if (viewportWidth >= 768) {
+                    if (side === 'left') {
+                        randomX = Math.random() * (viewportWidth * 0.25);
+                    } else {
+                        randomX = (viewportWidth * 0.75) + Math.random() * ((viewportWidth * 0.25) - 150);
+                    }
+
+                    const randomY = viewportHeight - (Math.random() * (viewportHeight * 0.6)) - 100; 
+                    let transformString = `rotate(${(Math.random() * 20) - 10}deg)`;
+
+                    robot.style.transform = transformString;
+                    robot.style.left = `${randomX}px`;
+                    robot.style.top = `${randomY}px`;
+                }
+                setTimeout(moveRobot, Math.random() * 4000 + 3000);
+            }
+            
+            changeExpression();
+            setTimeout(moveRobot, Math.random() * 2000); 
+        }
+
+        // --- 7. Interactive Network Effect ---
+        function initNetworkCanvas() {
+            const canvas = document.getElementById('network-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            
+            let mouse = { x: null, y: null, radius: 150 };
+            
+            window.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            window.addEventListener('mouseout', () => {
+                mouse.x = null; mouse.y = null;
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.size = Math.random() * 2 + 1;
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = (Math.random() - 0.5) * 1.5;
+                    this.density = (Math.random() * 30) + 1;
+                }
+                draw() {
+                    ctx.fillStyle = 'rgba(199, 125, 255, 0.8)';
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+                update() {
+                    this.x += this.vx; this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                    if (mouse.x != null) {
+                        let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < mouse.radius) {
+                            const force = (mouse.radius - distance) / mouse.radius;
+                            this.x -= (dx / distance) * force * this.density * 0.5;
+                            this.y -= (dy / distance) * force * this.density * 0.5;
+                        }
+                    }
+                }
+            }
+
+            let particleArray = [];
+            function init() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = canvas.parentElement.offsetHeight;
+                particleArray = [];
+                let numberOfParticles = (width * height) / 15000; 
+                for (let i = 0; i < numberOfParticles; i++) particleArray.push(new Particle());
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, width, height);
+                particleArray.forEach(p => { p.update(); p.draw(); });
+                for (let a = 0; a < particleArray.length; a++) {
+                    for (let b = a; b < particleArray.length; b++) {
+                        let dx = particleArray[a].x - particleArray[b].x;
+                        let dy = particleArray[a].y - particleArray[b].y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.strokeStyle = `rgba(157, 78, 221, ${(1 - dist/120) * 0.5})`;
+                            ctx.lineWidth = 1; ctx.beginPath();
+                            ctx.moveTo(particleArray[a].x, particleArray[a].y);
+                            ctx.lineTo(particleArray[b].x, particleArray[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            window.addEventListener('resize', init);
+            init(); animate();
+        }
+
+        // --- 8. Scroll Animations (Observer) ---
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-element').forEach(element => { observer.observe(element); });
+    </script>
+</body>
+</html>
